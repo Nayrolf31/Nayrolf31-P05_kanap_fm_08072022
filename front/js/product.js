@@ -3,6 +3,10 @@
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString)
 const id = urlParams.get("id")
+if (id != null) {
+    let itemPrice = 0
+    let imgUrl, altText
+}
 
 fetch(`http://localhost:3000/api/products/${id}`)
     .then(response => response.json())
@@ -15,6 +19,9 @@ function handleData(produit) {
     console.log({ produit })
 
     const { altTxt, colors, description, imageUrl, name, price } = produit
+    itemPrice = price
+    imgUrl = imageUrl
+    altText = altTxt
     makeImage(imageUrl, altTxt)
     makeTitle(name)
     makePrice(price)
@@ -66,3 +73,47 @@ function makeColors(colors) {
     }
 }
 
+
+//const pour récupérer la couleur et quantité du produit
+
+const button = document.querySelector("#addToCart")
+button.addEventListener("click", handleClick)
+
+
+function handleClick() {
+    const color = document.querySelector("#colors").value
+    const quantity = document.querySelector("#quantity").value
+    if (isOrderInvalid(color, quantity)) return
+    saveOrder(color, quantity)
+    redirectToCart()
+}
+
+//const pour recup toutes les infos necessaire ( dont price par l'API)
+//fonction qui regroupe les infos
+
+function saveOrder(color, quantity) {
+    const data = {
+        id: id,
+        color: color,
+        quantity: Number(quantity),
+        price: itemPrice,
+        imageUrl: imgUrl,
+        altTxt: altText
+    }
+    localStorage.setItem(id, JSON.stringify(data))
+}
+
+//fonction pour verifier si une color et quantité à était choisis
+
+function isOrderInvalid(color, quantity) {
+    if (color == null || color === "" || quantity == null || quantity == 0) {
+        alert("choisissez une couleur et une quantitée")
+        return true
+    }
+}
+
+//fonction pour rediriger vers la page cart
+
+function redirectToCart() {
+    window.location.href = "cart.html"
+}
