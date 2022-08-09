@@ -34,7 +34,7 @@ function displayItem(item) {
 }
 
 //fonc contenue cart
-function makeCartContent( item) {
+function makeCartContent(item) {
     const cartItemContent = document.createElement("div")
     cartItemContent.classList.add("cart__item__content")
 
@@ -58,7 +58,7 @@ function makeSettings(item) {
 //func ajout qté aux settings
 function addQuantityToSettings(settings, item) {
     const quantity = document.createElement("div")
-    quantity.classlist.add("cart__item__content__settings__quantity")
+    //quantity.classlist.add("cart__item__content__settings__quantity")   //bug!!!!!!!!!!!!!!!
     const p = document.createElement("p")
     p.textContent = "Qté : "
     quantity.appendChild(p)
