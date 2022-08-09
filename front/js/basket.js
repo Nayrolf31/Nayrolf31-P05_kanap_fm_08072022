@@ -1,1 +1,0 @@
-let product = localStorage.getItem("product")
