@@ -1,7 +1,5 @@
-
-
 //const pour créer un array d'objet dans cart ( avec cart.push(itemObject))
-const cart = [];
+const cart = []
 
 retrieveItemsFromCache()
 //loop pour afficher les objects dans le panier
@@ -16,6 +14,7 @@ function retrieveItemsFromCache() {
         const item = localStorage.getItem(localStorage.key(i)) || ""
         console.log("objet en position", i, "est", item)
         //const pour que le produit devienne un objet
+        
         const itemObject = JSON.parse(item)
         cart.push(itemObject)
     }
@@ -26,11 +25,30 @@ function displayItem(item) {
     const article = makeArticle(item)
     const imageDiv = makeImageDiv(item)
     article.appendChild(imageDiv)
-    
     const cartItemContent = makeCartContent(item)
     article.appendChild(cartItemContent)
-
     displayArticle(article)
+    displayTotalPrice()
+    displayTotalQuantity()
+}
+
+//function total qté
+function displayTotalQuantity() {
+    const totalQuantity = document.querySelector("#totalQuantity")
+    const total = cart.reduce((total, item) =>total + item.quantity, 0)
+    totalQuantity.textContent = total
+}
+
+//function pour total prix
+function displayTotalPrice() {
+    let total = 0;
+    const totalPrice = document.querySelector("#totalPrice")
+    cart.forEach(item => {
+       const totalUnitPrice = item.price * item.quantity
+       total += totalUnitPrice
+    })
+    console.log(total)
+    totalPrice.textContent = total
 }
 
 //fonc contenue cart
@@ -52,13 +70,26 @@ function makeSettings(item) {
     settings.classList.add("cart__item__content__settings")
 
     addQuantityToSettings(settings, item)
+    addDeleteToSettings(settings, item)
     return settings
+}
+
+
+//function bouton delete
+function addDeleteToSettings(settings) {
+    const div = document.createElement("div")
+    div.classList.add("cart__item__content__settings__delete")
+    const p = document.createElement("p")
+    p.classList.add("deleteItem")
+    p.textContent = "Supprimer"
+    div.appendChild(p)
+    settings.appendChild(div)
 }
 
 //func ajout qté aux settings
 function addQuantityToSettings(settings, item) {
     const quantity = document.createElement("div")
-    //quantity.classlist.add("cart__item__content__settings__quantity")   //bug!!!!!!!!!!!!!!!
+    quantity.classList.add("cart__item__content__settings__quantity") 
     const p = document.createElement("p")
     p.textContent = "Qté : "
     quantity.appendChild(p)
@@ -69,7 +100,26 @@ function addQuantityToSettings(settings, item) {
     input.min = "1"
     input.max = "100"
     input.value = item.quantity
-    settings.appendChild(input)
+    input.addEventListener("input", () => updatePriceAndQuantity(item.id, input.value, item))
+    
+    quantity.appendChild(input)
+    settings.appendChild(quantity)
+}
+
+//fonction pour changer le prix et quantité direct dans cart
+function updatePriceAndQuantity(id, newValue, item) {
+    const itemToUpdate = cart.find(item => item.id === id)
+    itemToUpdate.quantity = Number(newValue)
+    displayTotalQuantity()
+    displayTotalPrice()
+    saveNewDataToCache(item)
+}
+
+//fonc pour sauvegarder les changement dans le cache localstorage
+function saveNewDataToCache(item) {
+    console.log(item)
+    const dataToSave = JSON.stringify(item)
+    localStorage.setItem(item.id, dataToSave)
 }
 
 //function description produit

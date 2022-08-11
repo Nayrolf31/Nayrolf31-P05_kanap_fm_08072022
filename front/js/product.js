@@ -93,6 +93,7 @@ function handleClick() {
 //fonction qui regroupe les infos
 
 function saveOrder(color, quantity) {
+    const key = `${id}-${color}`
     const data = {
         id: id,
         color: color,
@@ -102,7 +103,9 @@ function saveOrder(color, quantity) {
         altTxt: altText,
         name: articleName,
     }
-    localStorage.setItem(id, JSON.stringify(data))
+    //manque conditions pour dire que si il y a déjà un produit, vérifier si c'est le même, si oui =>incrémenté ( si mm couleur et mm id), si c'est pas la mm, nouvelle ligne
+    //localstorage.getitem ( initialise si quelque chose à déjà était créer)   (exemple mettre "produit" et dans setitem enlever "id")
+    localStorage.setItem(key, id, JSON.stringify(data))
 }
 
 //fonction pour verifier si une color et quantité à était choisis
@@ -117,5 +120,8 @@ function isOrderInvalid(color, quantity) {
 //fonction pour rediriger vers la page cart
 
 function redirectToCart() {
-    window.location.href = "cart.html"
+    //window.location.href = "cart.html"
+    alert("votre article à bien était ajouté au panier")
 }
+
+
