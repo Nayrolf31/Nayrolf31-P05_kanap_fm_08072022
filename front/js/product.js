@@ -86,7 +86,8 @@ function handleClick() {
     const quantity = document.querySelector("#quantity").value
     if (isOrderInvalid(color, quantity)) return
     saveOrder(color, quantity)
-    redirectToCart()
+    //redirectToCart()
+    alertToCart()
 }
 
 //const pour recup toutes les infos necessaire ( dont price par l'API)
@@ -105,7 +106,7 @@ function saveOrder(color, quantity) {
     }
     //manque conditions pour dire que si il y a déjà un produit, vérifier si c'est le même, si oui =>incrémenté ( si mm couleur et mm id), si c'est pas la mm, nouvelle ligne
     //localstorage.getitem ( initialise si quelque chose à déjà était créer)   (exemple mettre "produit" et dans setitem enlever "id")
-    localStorage.setItem(key, id, JSON.stringify(data))
+    localStorage.setItem(key, JSON.stringify(data))
 }
 
 //fonction pour verifier si une color et quantité à était choisis
@@ -121,7 +122,9 @@ function isOrderInvalid(color, quantity) {
 
 function redirectToCart() {
     //window.location.href = "cart.html"
-    alert("votre article à bien était ajouté au panier")
 }
 
+function alertToCart() {
+alert("votre article à bien était ajouté au panier")
+}
 

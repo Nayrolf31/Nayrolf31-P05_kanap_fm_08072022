@@ -32,7 +32,7 @@ function displayItem(item) {
     displayTotalQuantity()
 }
 
-//function total qté
+//function total qté 
 function displayTotalQuantity() {
     const totalQuantity = document.querySelector("#totalQuantity")
     const total = cart.reduce((total, item) =>total + item.quantity, 0)
