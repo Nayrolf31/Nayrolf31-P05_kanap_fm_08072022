@@ -76,14 +76,38 @@ function makeSettings(item) {
 
 
 //function bouton delete
-function addDeleteToSettings(settings) {
+function addDeleteToSettings(settings, item) {
     const div = document.createElement("div")
     div.classList.add("cart__item__content__settings__delete")
+    div.addEventListener("click", () => deleteItem(item))
+
     const p = document.createElement("p")
     p.classList.add("deleteItem")
     p.textContent = "Supprimer"
     div.appendChild(p)
     settings.appendChild(div)
+}
+
+//func suppression produit
+function deleteItem(item) {
+    const itemToDelete = cart.findIndex(
+        (product) => product.id === item.id && product.color === item.color
+        )
+    cart.splice(itemToDelete, 1)
+    console.log(cart)
+    displayTotalPrice()
+    displayTotalQuantity()
+    deleteDataFromCache(item)
+    deleteArticleFromPage(item)
+}
+
+//func pour suprimer le visuel de l'article dans le panier
+function deleteArticleFromPage(item) {
+    const articleToDelete = document.querySelector(
+        `article[data-id="${item.id}"][data-color="${item.color}"]`
+    )
+    console.log("article supp", articleToDelete)
+    articleToDelete.remove()
 }
 
 //func ajout qté aux settings
@@ -114,6 +138,13 @@ function updatePriceAndQuantity(id, newValue, item) {
     displayTotalQuantity()
     displayTotalPrice()
     saveNewDataToCache(item)
+}
+
+//func pour supp le data du cache
+function deleteDataFromCache(item) {
+    const key = `${item.id}-${item.color}`
+    localStorage.removeItem(key)
+    console.log("on retire cette key", key)
 }
 
 //fonc pour sauvegarder les changement dans le cache localstorage
