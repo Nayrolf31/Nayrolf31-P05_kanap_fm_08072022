@@ -5,6 +5,10 @@ retrieveItemsFromCache()
 //loop pour afficher les objects dans le panier
 cart.forEach((item) => displayItem(item))
 
+//const formulaire
+const orderButton = document.querySelector("#order")
+orderButton.addEventListener("click", (e) => submitForm(e))
+
 function retrieveItemsFromCache() {
     // const pour récupérer le localstorage
 
@@ -12,7 +16,9 @@ function retrieveItemsFromCache() {
     // loop pour pouvoir récupérer plusieurs produits du localstorage
     for (let i = 0; i < numerOfItems; i++) {
         const item = localStorage.getItem(localStorage.key(i)) || ""
-        console.log("objet en position", i, "est", item)
+        //console.log("objet en position", i, "est", item)
+        
+        
         //const pour que le produit devienne un objet
         
         const itemObject = JSON.parse(item)
@@ -47,7 +53,7 @@ function displayTotalPrice() {
        const totalUnitPrice = item.price * item.quantity
        total += totalUnitPrice
     })
-    console.log(total)
+    //console.log(total)
     totalPrice.textContent = total
 }
 
@@ -201,4 +207,55 @@ function makeImageDiv(item) {
     image.alt = item.altTxt
     div.appendChild(image)
     return div
+}
+
+//func formulaire
+function submitForm(e) {
+    e.preventDefault()
+    if (cart.length === 0) alert("selectionner des articles à acheter")
+    const body = makeRequestBody()
+    //28:00
+    fetch("http://localhost:3000/api/products/order", {
+        method: "POST",
+        body: JSON.stringify(body),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+        .then((res) => res.json())
+        .then((data) => console.log(data))
+    //console.log(form.elements.firstName.value)
+}
+
+function makeRequestBody() {
+    const form = document.querySelector(".cart__order__form")
+    const firstName = form.elements.firstName.value
+    const lastName = form.elements.lastName.value
+    const address = form.elements.address.value
+    const city = form.elements.city.value
+    const email = form.elements.email.value
+    const body = {
+        contact: {
+            firstName: firstName,
+            lastName: lastName,
+            address: address,
+            city: city,
+            email: email,
+        },
+        products: getIdsFromCache()
+    }
+    console.log("body", body)
+    return body
+}
+
+function getIdsFromCache() {
+    const numberOfProducts = localStorage.length
+    const ids = []
+    for (let i = 0; i < numberOfProducts; i++) {
+        const key = localStorage.key(i)
+        console.log("key", key)
+        const id = key.split("-")[0]
+        ids.push(id)
+    }
+    return ids
 }

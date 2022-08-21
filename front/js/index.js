@@ -10,12 +10,6 @@ fetch(url)
 
 function addProducts(produits) {
 
-  //const _id = data[0]._id
-  //const imageUrl = data[0].imageUrl
-  //const altTxt = data[0].altTxt
-  //const name = data[0].name
-  //const description = data[0].description
-
   //mise en place Loop pour récupérer tout les produits
 
   produits.forEach((produit) => {

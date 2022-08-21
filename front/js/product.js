@@ -111,9 +111,13 @@ function saveOrder(color, quantity) {
 
 //fonction pour verifier si une color et quantité à était choisis
 
-function isOrderInvalid(color, quantity) {
-    if (color == null || color === "" || quantity == null || quantity == 0) {
-        alert("choisissez une couleur et une quantitée")
+function isOrderInvalid(color, quantity) {  
+    if (color == null || color === "") {
+        alert("choisissez une couleur")
+        return true
+    }
+    if (quantity == null || quantity == 0) {
+        alert("choisissez une quantitée")
         return true
     }
 }
