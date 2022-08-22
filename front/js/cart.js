@@ -217,6 +217,9 @@ function submitForm(e) {
         return}
 
        if (isFormInvalid()) return
+       if (isEmailInvalid())return
+       if (isfirstNameInvalid())return
+       if (islastNameInvalid())return
 
     const body = makeRequestBody()
     fetch("http://localhost:3000/api/products/order", {
@@ -231,6 +234,38 @@ function submitForm(e) {
     //console.log(form.elements.firstName.value)
 }
 
+//func pour voir si l'email est bien rempli
+function isEmailInvalid() {
+    const email = document.querySelector("#email").value
+    const regex = /^[A-Za-z0-9+_.-]+@(.+)$/
+    if (regex.test(email) === false) {
+        alert ("entrez un email valide")
+        return true
+    }
+    return false
+}
+
+function isfirstNameInvalid() {
+    const firstname = document.querySelector("#firstName").value
+    const regex = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/
+    if (regex.test(firstname) === false) {
+        alert ("entrez un Prénom valide")
+        return true
+    }
+    return false
+}
+
+function islastNameInvalid() {
+    const lastname = document.querySelector("#lastName").value
+    const regex = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/
+    if (regex.test(lastname) === false) {
+        alert ("entrez un Nom valide")
+        return true
+    }
+    return false
+}
+
+//func pour voir si le form est bien rempli
 function isFormInvalid() {
     const form = document.querySelector(".cart__order__form")
     const inputs = form.querySelectorAll("input")
@@ -239,6 +274,7 @@ function isFormInvalid() {
             alert("veuillez remplir tout le formulaire")
             return true
         }
+        return false
     })
 }
 
@@ -252,7 +288,7 @@ function makeRequestBody() {
     const body = {
         contact: {
             firstName: firstName,
-            lastName: lastName,
+            lastName: lastName, 
             address: address,
             city: city,
             email: email,
