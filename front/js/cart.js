@@ -212,9 +212,13 @@ function makeImageDiv(item) {
 //func formulaire
 function submitForm(e) {
     e.preventDefault()
-    if (cart.length === 0) alert("selectionner des articles à acheter")
+    if (cart.length === 0) {
+        alert("selectionner des articles à acheter")
+        return}
+
+       if (isFormInvalid()) return
+
     const body = makeRequestBody()
-    //28:00
     fetch("http://localhost:3000/api/products/order", {
         method: "POST",
         body: JSON.stringify(body),
@@ -225,6 +229,17 @@ function submitForm(e) {
         .then((res) => res.json())
         .then((data) => console.log(data))
     //console.log(form.elements.firstName.value)
+}
+
+function isFormInvalid() {
+    const form = document.querySelector(".cart__order__form")
+    const inputs = form.querySelectorAll("input")
+    inputs.forEach((input) => {
+        if (input.value == "") {
+            alert("veuillez remplir tout le formulaire")
+            return true
+        }
+    })
 }
 
 function makeRequestBody() {
