@@ -216,10 +216,12 @@ function submitForm(e) {
         alert("selectionner des articles à acheter")
         return}
 
-       if (isFormInvalid()) return
+       if (isFormInvalid())return
        if (isEmailInvalid())return
        if (isfirstNameInvalid())return
        if (islastNameInvalid())return
+       if (isCityInvalid())return
+       if (isAddressInvalide())return
 
     const body = makeRequestBody()
     fetch("http://localhost:3000/api/products/order", {
@@ -252,7 +254,7 @@ function isEmailInvalid() {
 
 function isfirstNameInvalid() {
     const firstname = document.querySelector("#firstName").value
-    const regex = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/
+    const regex = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{1,}$/
     if (regex.test(firstname) === false) {
         alert ("entrez un Prénom valide")
         return true
@@ -262,9 +264,29 @@ function isfirstNameInvalid() {
 
 function islastNameInvalid() {
     const lastname = document.querySelector("#lastName").value
-    const regex = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/
+    const regex = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{1,}$/
     if (regex.test(lastname) === false) {
         alert ("entrez un Nom valide")
+        return true
+    }
+    return false
+}
+
+function isCityInvalid() {
+    const city = document.querySelector("#city").value
+    const regex = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{1,}$/
+    if (regex.test(city) === false) {
+        alert ("entrez un Nom de ville valide")
+        return true
+    }
+    return false
+}
+
+function isAddressInvalide() {
+    const address = document.querySelector("#address").value
+    const regex = /^[a-zA-Z0-9\s]{3,}$/
+    if (regex.test(address) === false) {
+        alert ("entrez une Adresse valide")
         return true
     }
     return false
@@ -275,7 +297,7 @@ function isFormInvalid() {
     const form = document.querySelector(".cart__order__form")
     const inputs = form.querySelectorAll("input")
     inputs.forEach((input) => {
-        if (input.value == "") {
+        if (input.value === "") {
             alert("veuillez remplir tout le formulaire")
             return true
         }

@@ -1,6 +1,6 @@
 const orderId = getOrderId()
 displayOrderId(orderId)
-//removeAllCache()
+removeAllCache()
 
 function getOrderId () {
     //utilisation de urlsearchparams pour récupérer l'id de la commande
@@ -17,8 +17,8 @@ function displayOrderId() {
 }
 
 //func pour clean le localstorage
-// function removeAllCache() {
-//     const cache = window.localStorage
-//     cache.clear()
-// }
+function removeAllCache() {
+    const cache = window.localStorage
+    cache.clear()
+}
 
