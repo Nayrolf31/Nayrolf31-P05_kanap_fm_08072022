@@ -17,10 +17,10 @@ function retrieveItemsFromCache() {
     for (let i = 0; i < numerOfItems; i++) {
         const item = localStorage.getItem(localStorage.key(i)) || ""
         //console.log("objet en position", i, "est", item)
-        
-        
+
+
         //const pour que le produit devienne un objet
-        
+
         const itemObject = JSON.parse(item)
         cart.push(itemObject)
     }
@@ -41,7 +41,7 @@ function displayItem(item) {
 //function total qté 
 function displayTotalQuantity() {
     const totalQuantity = document.querySelector("#totalQuantity")
-    const total = cart.reduce((total, item) =>total + item.quantity, 0)
+    const total = cart.reduce((total, item) => total + item.quantity, 0)
     totalQuantity.textContent = total
 }
 
@@ -50,8 +50,8 @@ function displayTotalPrice() {
     let total = 0;
     const totalPrice = document.querySelector("#totalPrice")
     cart.forEach(item => {
-       const totalUnitPrice = item.price * item.quantity
-       total += totalUnitPrice
+        const totalUnitPrice = item.price * item.quantity
+        total += totalUnitPrice
     })
     //console.log(total)
     totalPrice.textContent = total
@@ -98,7 +98,7 @@ function addDeleteToSettings(settings, item) {
 function deleteItem(item) {
     const itemToDelete = cart.findIndex(
         (product) => product.id === item.id && product.color === item.color
-        )
+    )
     cart.splice(itemToDelete, 1)
     console.log(cart)
     displayTotalPrice()
@@ -119,7 +119,7 @@ function deleteArticleFromPage(item) {
 //func ajout qté aux settings
 function addQuantityToSettings(settings, item) {
     const quantity = document.createElement("div")
-    quantity.classList.add("cart__item__content__settings__quantity") 
+    quantity.classList.add("cart__item__content__settings__quantity")
     const p = document.createElement("p")
     p.textContent = "Qté : "
     quantity.appendChild(p)
@@ -131,7 +131,7 @@ function addQuantityToSettings(settings, item) {
     input.max = "100"
     input.value = item.quantity
     input.addEventListener("input", () => updatePriceAndQuantity(item.id, input.value, item))
-    
+
     quantity.appendChild(input)
     settings.appendChild(quantity)
 }
@@ -165,21 +165,21 @@ function saveNewDataToCache(item) {
 
 //function description produit
 function makeDescription(item) {
-      //création const description
-      const description = document.createElement("div")
-      description.classList.add("cart__item__content__description")
-  
-      const h2 = document.createElement("h2")
-      h2.textContent = item.name;
-      const p = document.createElement("p")
-      p.textContent = item.color;
-      const p2 = document.createElement("p")
-      p2.textContent = item.price + " €";
-  
-      description.appendChild(h2)
-      description.appendChild(p)
-      description.appendChild(p2)
-      return description
+    //création const description
+    const description = document.createElement("div")
+    description.classList.add("cart__item__content__description")
+
+    const h2 = document.createElement("h2")
+    h2.textContent = item.name;
+    const p = document.createElement("p")
+    p.textContent = item.color;
+    const p2 = document.createElement("p")
+    p2.textContent = item.price + " €";
+
+    description.appendChild(h2)
+    description.appendChild(p)
+    description.appendChild(p2)
+    return description
 }
 
 
@@ -204,7 +204,7 @@ function makeImageDiv(item) {
     //création img
     const image = document.createElement("img")
     image.src = item.imageUrl,
-    image.alt = item.altTxt
+        image.alt = item.altTxt
     div.appendChild(image)
     return div
 }
@@ -214,14 +214,15 @@ function submitForm(e) {
     e.preventDefault()
     if (cart.length === 0) {
         alert("selectionner des articles à acheter")
-        return}
+        return
+    }
 
-       if (isFormInvalid())return
-       if (isEmailInvalid())return
-       if (isfirstNameInvalid())return
-       if (islastNameInvalid())return
-       if (isCityInvalid())return
-       if (isAddressInvalide())return
+    if (isFormInvalid()) return
+    if (isEmailInvalid()) return
+    if (isfirstNameInvalid()) return
+    if (islastNameInvalid()) return
+    if (isCityInvalid()) return
+    if (isAddressInvalide()) return
 
     const body = makeRequestBody()
     fetch("http://localhost:3000/api/products/order", {
@@ -234,62 +235,11 @@ function submitForm(e) {
         .then((res) => res.json())
         .then((data) => {
             const orderId = data.orderId
-            window.location.href= "confirmation.html" + "?orderId=" + orderId
+            window.location.href = "confirmation.html" + "?orderId=" + orderId
             return console.log(data)
         })
         .catch((err) => console.error(err))
     //console.log(form.elements.firstName.value)
-}
-
-//func pour voir si l'email est bien rempli
-function isEmailInvalid() {
-    const email = document.querySelector("#email").value
-    const regex = /^[A-Za-z0-9+_.-]+@(.+)$/
-    if (regex.test(email) === false) {
-        alert ("entrez un email valide")
-        return true
-    }
-    return false
-}
-
-function isfirstNameInvalid() {
-    const firstname = document.querySelector("#firstName").value
-    const regex = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{1,}$/
-    if (regex.test(firstname) === false) {
-        alert ("entrez un Prénom valide")
-        return true
-    }
-    return false
-}
-
-function islastNameInvalid() {
-    const lastname = document.querySelector("#lastName").value
-    const regex = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{1,}$/
-    if (regex.test(lastname) === false) {
-        alert ("entrez un Nom valide")
-        return true
-    }
-    return false
-}
-
-function isCityInvalid() {
-    const city = document.querySelector("#city").value
-    const regex = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{1,}$/
-    if (regex.test(city) === false) {
-        alert ("entrez un Nom de ville valide")
-        return true
-    }
-    return false
-}
-
-function isAddressInvalide() {
-    const address = document.querySelector("#address").value
-    const regex = /^[a-zA-Z0-9\s]{3,}$/
-    if (regex.test(address) === false) {
-        alert ("entrez une Adresse valide")
-        return true
-    }
-    return false
 }
 
 //func pour voir si le form est bien rempli
@@ -303,6 +253,69 @@ function isFormInvalid() {
         }
         return false
     })
+};
+
+function isfirstNameInvalid() {
+    const firstname = document.querySelector("#firstName").value
+    const regex = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{1,}$/
+    if (regex.test(firstname) === false) {
+        document.getElementById('firstNameErrorMsg').innerHTML="Veuillez entrez un prénom valide";  
+        firstName.focus(); 
+        //alert("entrez un Prénom valide")
+        return true
+    }
+    return false
+}
+
+function islastNameInvalid() {
+    const lastname = document.querySelector("#lastName").value
+    const regex = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{1,}$/
+    if (regex.test(lastname) === false) {
+        document.getElementById('lastNameErrorMsg').innerHTML="Veuillez entrez un Nom valide";  
+        lastName.focus(); 
+        //alert("entrez un Nom valide")
+        return true
+    }
+    return false
+}
+
+function isCityInvalid() {
+    const city = document.querySelector("#city").value
+    const regex = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{1,}$/
+    if (regex.test(city) === false) {
+        document.getElementById('cityErrorMsg').innerHTML="Veuillez entrez un nom de ville valide";  
+        city.focus(); 
+        //alert("entrez un Nom de ville valide")
+        return true
+    }
+    return false
+}
+
+function isAddressInvalide() {
+    const address = document.querySelector("#address").value
+    const regex = /^[a-zA-Z0-9\s]{3,}$/
+    if (regex.test(address) === false) {
+        document.getElementById('addressErrorMsg').innerHTML="Veuillez entrez une Adresse valide";  
+        address.focus(); 
+        //alert("entrez une Adresse valide")
+        return true
+    }
+    return false
+}
+
+//func pour voir si l'email est bien rempli
+function isEmailInvalid() {
+    const email = document.querySelector("#email").value
+    const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+    // /^[A-Za-z0-9+_.-]+@(.+)$/
+    if (regex.test(email) === false) {
+        document.getElementById('emailErrorMsg').innerHTML="Veuillez entrez un e-mail valide";  
+        email.focus(); 
+        //alert("entrez un email valide")
+        return true
+    }
+    
+    return false
 }
 
 function makeRequestBody() {
@@ -315,7 +328,7 @@ function makeRequestBody() {
     const body = {
         contact: {
             firstName: firstName,
-            lastName: lastName, 
+            lastName: lastName,
             address: address,
             city: city,
             email: email,
