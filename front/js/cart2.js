@@ -1,34 +1,64 @@
 //const pour créer un array d'objet dans cart ( avec cart.push(itemObject))
 const cart = []
 
+//func recupération infos
+function getProduct() {
+    const url = "http://localhost:3000/api/products"
+    return fetch(url)
+        .then(res => res.json())
+        .then(data => data)
+        .catch(function (error) {
+            console.log(error)
+        })
+}
+
 retrieveItemsFromCache()
 //loop pour afficher les objects dans le panier
-cart.forEach((item) => displayItem(item))
+//cart.forEach((item) => displayItem(item))
 
 //const formulaire
 const orderButton = document.querySelector("#order")
 orderButton.addEventListener("click", (e) => submitForm(e))
 
-function retrieveItemsFromCache() {
-    // const pour récupérer le localstorage
-
-    const numerOfItems = localStorage.length
-    // loop pour pouvoir récupérer plusieurs produits du localstorage
-    for (let i = 0; i < numerOfItems; i++) {
-        const item = localStorage.getItem(localStorage.key(i)) || ""
-        //console.log("objet en position", i, "est", item)
-
-        //const pour que le produit devienne un objet
-        const itemObject = JSON.parse(item)
-        cart.push(itemObject)
+async function retrieveItemsFromCache() {
+    const items = await localStorage.getItem('produit')
+    console.log("item", items)
+    const product = await getProduct()
+    console.log("product", product)
+    for (let cartToShow of items) {
+        //const item = product.filter(p => p._id === cartToShow.id)
+        for (let i in product) {
+            if (product[i]._id === cartToShow.id) {
+                //console.log(item._id)
+                const item = product[i]
+                console.log("test", item)
+                displayItem(item[0], cartToShow)
+            }  else {
+                console.log("try")
+            }return         
+        } 
     }
+    
+    // // const pour récupérer le localstorage
+    // const item = localStorage.getItem('produit') || ""
+
+    // //const numerOfItems = localStorage.length
+    // // loop pour pouvoir récupérer plusieurs produits du localstorage
+    // for (let i in item) {
+    //     //console.log("objet en position", i, "est", item)
+    //     const itemGet = item 
+    //     //const pour que le produit devienne un objet
+    //     const itemObject = JSON.parse(itemGet)
+    //     cart.push(itemObject)
+    //     return
+    // }
 }
 
 //fonc pour afficher les objects
-function displayItem(item) {
-    console.log("ici", item)
-    const article = makeArticle(item)
-    const imageDiv = makeImageDiv(item)
+async function displayItem(items, cartToShow) {
+    console.log("ici", items)
+    const article = makeArticle(cartToShow)
+    const imageDiv = makeImageDiv(cartToShow)
     article.appendChild(imageDiv)
     const cartItemContent = makeCartContent(item)
     article.appendChild(cartItemContent)
@@ -163,17 +193,17 @@ function saveNewDataToCache(item) {
 
 
 //function description produit
-function makeDescription(item) {
+function makeDescription(cartToShow) {
     //création const description
     const description = document.createElement("div")
     description.classList.add("cart__item__content__description")
 
     const h2 = document.createElement("h2")
-    h2.textContent = item.name;
+    h2.textContent = cartToShow.name;
     const p = document.createElement("p")
-    p.textContent = item.color;
+    p.textContent = cartToShow.color;
     const p2 = document.createElement("p")
-    p2.textContent = item.price + " €";
+    p2.textContent = cartToShow.price + " €";
 
     description.appendChild(h2)
     description.appendChild(p)
@@ -187,23 +217,23 @@ function displayArticle(article) {
     document.querySelector("#cart__items").appendChild(article)
 }
 
-function makeArticle(item) {
+function makeArticle(cartToShow) {
     const article = document.createElement("article")
     article.classList.add("cart__item")
-    article.dataset.id = item.id
-    article.dataset.color = item.color
+    article.dataset.id = cartToShow.id
+    article.dataset.color = cartToShow.color
     return article
 }
 
 
-function makeImageDiv(item) {
+async function makeImageDiv(cartToShow) {
     //création div
     const div = document.createElement("div")
     div.classList.add("cart__item__img")
     //création img
     const image = document.createElement("img")
-    image.src = item.imageUrl,
-        image.alt = item.altTxt
+    image.src = cartToShow.imageUrl,
+        image.alt = cartToShow.altTxt
     div.appendChild(image)
     return div
 }
@@ -257,44 +287,44 @@ function isfirstNameInvalid() {
     const firstname = document.querySelector("#firstName").value
     const regex = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{1,}$/
     if (regex.test(firstname) === false) {
-        document.getElementById('firstNameErrorMsg').innerHTML="Veuillez entrer un prénom valide";  
-        firstName.focus(); 
+        document.getElementById('firstNameErrorMsg').innerHTML = "Veuillez entrer un prénom valide";
+        firstName.focus();
         return true
     }
-    else document.getElementById('firstNameErrorMsg').innerHTML="";  
+    else document.getElementById('firstNameErrorMsg').innerHTML = "";
 }
 
 function islastNameInvalid() {
     const lastname = document.querySelector("#lastName").value
     const regex = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{1,}$/
     if (regex.test(lastname) === false) {
-        document.getElementById('lastNameErrorMsg').innerHTML="Veuillez entrer un Nom valide";  
-        lastName.focus(); 
+        document.getElementById('lastNameErrorMsg').innerHTML = "Veuillez entrer un Nom valide";
+        lastName.focus();
         return true
     }
-    else document.getElementById('lastNameErrorMsg').innerHTML="";
+    else document.getElementById('lastNameErrorMsg').innerHTML = "";
 }
 
 function isCityInvalid() {
     const city = document.querySelector("#city").value
     const regex = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{1,}$/
     if (regex.test(city) === false) {
-        document.getElementById('cityErrorMsg').innerHTML="Veuillez entrer un nom de ville valide";  
-        city.focus(); 
+        document.getElementById('cityErrorMsg').innerHTML = "Veuillez entrer un nom de ville valide";
+        city.focus();
         return true
     }
-    else document.getElementById('cityErrorMsg').innerHTML="";
+    else document.getElementById('cityErrorMsg').innerHTML = "";
 }
 
 function isAddressInvalide() {
     const address = document.querySelector("#address").value
     const regex = /^[a-zA-Z0-9\s]{3,}$/
     if (regex.test(address) === false) {
-        document.getElementById('addressErrorMsg').innerHTML="Veuillez entrer une Adresse valide";  
-        address.focus(); 
+        document.getElementById('addressErrorMsg').innerHTML = "Veuillez entrer une Adresse valide";
+        address.focus();
         return true
     }
-    else document.getElementById('addressErrorMsg').innerHTML="";
+    else document.getElementById('addressErrorMsg').innerHTML = "";
 }
 
 //func pour voir si l'email est bien rempli
@@ -303,11 +333,11 @@ function isEmailInvalid() {
     const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
     // /^[A-Za-z0-9+_.-]+@(.+)$/
     if (regex.test(email) === false) {
-        document.getElementById('emailErrorMsg').innerHTML="Veuillez entrer un e-mail valide exemple: didier@gmail.com";  
-        email.focus(); 
+        document.getElementById('emailErrorMsg').innerHTML = "Veuillez entrer un e-mail valide exemple: didier@gmail.com";
+        email.focus();
         return true
     }
-    else document.getElementById('emailErrorMsg').innerHTML="";
+    else document.getElementById('emailErrorMsg').innerHTML = "";
 }
 
 //fonction pour faire remonter les infos du formulaire

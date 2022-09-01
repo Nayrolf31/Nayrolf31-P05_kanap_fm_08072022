@@ -84,11 +84,11 @@ function handleClick() {
 
 //const pour recup toutes les infos necessaire ( dont price par l'API)
 //fonction qui regroupe les infos
+const key = `${id}-${color}`
+let data;
 
 function saveOrder(color, quantity) {
-    //if {}
-    const key = `${id}-${color}`
-    const data = {
+    data = {
         id: id,
         color: color,
         quantity: Number(quantity),
@@ -97,12 +97,26 @@ function saveOrder(color, quantity) {
         altTxt: altText,
         name: articleName,
     }
-    localStorage.setItem(key, JSON.stringify(data))
+    localStorage.setItem('produit', key, JSON.stringify(data))
 }
+
+function addBasket(data) {
+    const numerOfItems = localStorage.length
+    // loop pour pouvoir récupérer plusieurs produits du localstorage
+    for (let i = 0; i < numerOfItems; i++) {
+        const item = localStorage.getItem(localStorage.key(i))
+
+        if (data.id === item.id && data.color === item.color) {
+            item.quantity = data.quantity + item.quantity
+            return
+        }
+    }
+}
+addBasket()
 
 //fonction pour verifier si une color et quantité à était choisis
 
-function isOrderInvalid(color, quantity) {  
+function isOrderInvalid(color, quantity) {
     if (color == null || color === "") {
         alert("choisissez une couleur")
         return true
@@ -114,6 +128,6 @@ function isOrderInvalid(color, quantity) {
 }
 
 function alertToCart() {
-alert("votre article à bien était ajouté au panier")
+    alert("votre article à bien était ajouté au panier")
 }
 

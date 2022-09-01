@@ -52,7 +52,6 @@ function appendArticleToAnchor(anchor, article) {
 }
 
 //fonction pour récup img
-
 function makeImage(imageUrl, altTxt) {
   const image = document.createElement("img")
   image.src = imageUrl
@@ -61,7 +60,6 @@ function makeImage(imageUrl, altTxt) {
 }
 
 //fonc recup name
-
 function makeH3(name) {
   const h3 = document.createElement("h3")
   h3.textContent = name
@@ -70,7 +68,6 @@ function makeH3(name) {
 }
 
 //fonc recup P
-
 function makeParagraphe(description) {
   const p = document.createElement("p")
   p.textContent = description

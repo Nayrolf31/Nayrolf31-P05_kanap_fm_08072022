@@ -97,12 +97,37 @@ function saveOrder(color, quantity) {
         altTxt: altText,
         name: articleName,
     }
-    localStorage.setItem(key, JSON.stringify(data))
-}
 
+    let localProducts = JSON.parse(localStorage.getItem('produit'));
+
+    if (localProducts === null) {
+        localProducts = [];
+    }
+
+    let updateProduct = false;
+
+    if (localProducts) {
+
+        localProducts.forEach((element, key) => {
+            if (element.id === id && element.color === color) {
+                localProducts[key].quantity = parseInt(element.quantity) +
+                    parseInt(Number(quantity))
+                localStorage.setItem('produit', JSON.stringify(localProducts
+                ));
+                updateProduct = true;
+                alert('panier mis à jour')
+            }
+        });
+
+        if (!updateProduct) {
+            localProducts.push(data);
+            localStorage.setItem('produit', JSON.stringify(localProducts));
+        }
+    }
+}
 //fonction pour verifier si une color et quantité à était choisis
 
-function isOrderInvalid(color, quantity) {  
+function isOrderInvalid(color, quantity) {
     if (color == null || color === "") {
         alert("choisissez une couleur")
         return true
@@ -114,6 +139,6 @@ function isOrderInvalid(color, quantity) {
 }
 
 function alertToCart() {
-alert("votre article à bien était ajouté au panier")
+    alert("votre article à bien était ajouté au panier")
 }
 
