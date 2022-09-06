@@ -1,9 +1,7 @@
 let localProducts = JSON.parse(localStorage.getItem('produit'));
-console.log("ici", localProducts)
-//const pour créer un array d'objet dans cart ( avec cart.push(itemObject))
-//let card = [];
 let products = [];
 
+//fonction qui permet de récupérer tout les produits de l'API par le fetch
 function getProduct() {
     const url = "http://localhost:3000/api/products"
     return fetch(url)
@@ -13,18 +11,6 @@ function getProduct() {
             console.log(error)
         })
 }
-
-//const itemPrice = price
-
-function makePrice(price) {
-    const span = document.querySelector("#price")
-    if (span != null) span.textContent = price
-    console.log("prix", price)
-}
-
-//retrieveItemsFromCache()
-//loop pour afficher les objects dans le panier
-//cart.forEach((item) => displayItem(item))
 
 //const formulaire
 const orderButton = document.querySelector("#order")
@@ -36,8 +22,10 @@ for (i = 0; i < localProducts.length; i++) {
     products.push(localProducts[i].id)
 }
 
+//const qui permet de récupérer "cart__items"
 const card = document.getElementById("cart__items")
 
+//fonction qui permet de générer l'affichage des produits dans l'article en fonction des produits présent dans le LS et des infos de l'API
 function displayItem(products, productToShow) {
     let childCard = document.createElement("article");
     childCard.classList.add("cart__item");
@@ -67,27 +55,33 @@ function displayItem(products, productToShow) {
     card.appendChild(childCard);
 }
 
+//fonction qui permet de retrouver un produit de LS dans l'API par le biais de l'ID
 async function compareProduct() {
+    //équivalent fetch
     const products = await getProduct();
+    //productToShow = produit récup du LS
     for (let productToShow of localProducts) {
+        //pour chaque produit trouver dans le LS => const product => filter = recherche dans résultat fetch. si produit LS stric = produit fetch => affichage
         const product = products.filter(p => p._id === productToShow.id)
+        // 0 car tableau démarre à 0, pour être sûr qu'aucun produit n'est oublié
         displayItem(product[0], productToShow)
     }
     return
 }
 
-//function total qté 
+//function qui permet de calculer la qté totale de produits dans le panier
 function displayTotalQuantity(localProducts) {
     let total = 0;
-    console.log("total =", total)
+    //boucle qui permet d'aller regarder chaque produit du LS => récupère qté de chaque item 
+    //=> assigne valeur totale
     for (let i in localProducts) {
-        console.log("yay", localProducts)
         const allProducts = localProducts[i].quantity
         total += allProducts
     }
     return total
 }
 
+//fonction qui permet d'afficher le total d'article et de prix correspondant
 async function displayQuantityAndPrice() {
     const totalQuantity = document.getElementById("totalQuantity")
     totalQuantity.textContent = displayTotalQuantity(localProducts)
@@ -96,15 +90,18 @@ async function displayQuantityAndPrice() {
     totalPrice.textContent = await displayTotalPrice()
 }
 
-//function pour total prix
+//function qui permet de calculer le prix total
 async function displayTotalPrice() {
     let total = 0;
-    console.log("price =", total)
     const allProducts = await getProduct();
+    //première boucle qui cherche dans le LS pour récupérer les produits
     for (let j in localProducts) {
+        //seconde boucle qui fouille dans l'API pour trouver le prix et l'id correspondant au produits LS
         for (let i in allProducts) {
             const price = allProducts[i].price;
             const id = allProducts[i]._id;
+            //point d'équivalence entre l'ID du LS et l'ID du produit de l'API 
+            //=> calcul du prix en fonction de la Qté des produits présent dans le LS et prix API
             if (localProducts[j].id === id) {
                 total += localProducts[j].quantity * price
             }
@@ -113,11 +110,12 @@ async function displayTotalPrice() {
     return total
 }
 
-//func pour suprimer le visuel de l'article dans le panier
-
+//fonction changement qté cart
 function changeQuantityFromCard() {
     const itemQuantity = document.getElementsByName("itemQuantity");
+    //boucle qui regarde tout les input
     for (let item of itemQuantity) {
+        //ajout evenlistener qui permet de cibler l'input au click par la récupération de l'id et color grace aux dataset
         item.addEventListener("change", function (event) {
             const parent = event.target.closest("article")
             const id = parent.dataset.id
@@ -128,6 +126,7 @@ function changeQuantityFromCard() {
     }
 }
 
+//fonction qui permet de vérifier que la Qté modifier correspond bien à l'article voulut
 function saveChangeQuantity(id, color, quantity) {
     for (let i in localProducts) {
         if (localProducts[i].id === id && localProducts[i].color === color) {
@@ -138,24 +137,31 @@ function saveChangeQuantity(id, color, quantity) {
     }
 }
 
+//fonction qui permet de cibler le bon bouton supprimer par les dataset
 function deleteItemFromCard() {
     const deleteQuantity = document.getElementsByClassName("deleteItem");
+    //ajout d'un evenement au click qui cible le produit
     for (let item of deleteQuantity) {
         item.addEventListener("click", function (event) {
             const parent = event.target.closest("article")
             const id = parent.dataset.id
             const color = parent.dataset.color
+            //ajout d'une alerte qui permet une meilleur expérience à l'utilisateur et évite la suppression accidentel
             if (window.confirm("souhaitez-vous vraiment supprimer cette article de votre panier?")) {
                 chooseProductDelete(id, color);
+                //refresh
                 location.reload()
             }
         })
     }
 }
 
+//fonction qui fouille dans le LS pour comparer l'id et la couleur de celui-ci
 function chooseProductDelete(id, color) {
     for (let i in localProducts) {
-        if (localProducts[i].id === id && localProducts[i].color === color){
+        if (localProducts[i].id === id && localProducts[i].color === color)
+        {
+            //splice qui permet de retirer un article de l'array du LS
             localProducts.splice(i, 1)
             localStorage.setItem('produit', JSON.stringify(localProducts));
             displayQuantityAndPrice();
