@@ -9,7 +9,7 @@ function getOrderId () {
     return urlParams.get("orderId")
 }
 
-
+//fonction pour afficher l'id de commande
 function displayOrderId() {
     const orderIdElement = document.getElementById("orderId")
     orderIdElement.textContent = orderId

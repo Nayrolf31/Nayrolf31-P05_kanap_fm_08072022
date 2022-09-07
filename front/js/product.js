@@ -86,7 +86,6 @@ function handleClick() {
 //fonction qui regroupe les infos
 
 function saveOrder(color, quantity) {
-    //if {}
     const key = `${id}-${color}`
     const data = {
         id: id,
@@ -112,6 +111,13 @@ function saveOrder(color, quantity) {
             if (element.id === id && element.color === color) {
                 localProducts[key].quantity = parseInt(element.quantity) +
                     parseInt(Number(quantity))
+                    //
+                    if(localProducts[key].quantity > 100)  {
+                        console.log("coucou")
+                        localProducts[key].quantity = 100
+                        alert("100 articles identiques maximum dans le panier")
+                    }     
+                    // 
                 localStorage.setItem('produit', JSON.stringify(localProducts
                 ));
                 updateProduct = true;
@@ -125,6 +131,7 @@ function saveOrder(color, quantity) {
         }
     }
 }
+
 //fonction pour verifier si une color et quantité à était choisis
 
 function isOrderInvalid(color, quantity) {
@@ -134,6 +141,10 @@ function isOrderInvalid(color, quantity) {
     }
     if (quantity == null || quantity == 0) {
         alert("choisissez une quantitée")
+        return true
+    }
+    if (quantity > 100 || quantity < 1) {
+        alert("100 articles maximum")
         return true
     }
 }

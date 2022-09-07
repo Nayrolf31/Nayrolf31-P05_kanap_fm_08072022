@@ -149,7 +149,7 @@ function deleteItemFromCard() {
             //ajout d'une alerte qui permet une meilleur expérience à l'utilisateur et évite la suppression accidentel
             if (window.confirm("souhaitez-vous vraiment supprimer cette article de votre panier?")) {
                 chooseProductDelete(id, color);
-                //refresh
+                //refresh pour affichage des modifications
                 location.reload()
             }
         })
@@ -172,6 +172,7 @@ function chooseProductDelete(id, color) {
 //func formulaire
 function submitForm(e) {
     e.preventDefault()
+    //si LS est vide => alerte
     if (localProducts.length === 0) {
         alert("selectionner des articles à acheter")
         return
@@ -290,6 +291,7 @@ function getIdsFromCache() {
     return ids
 }
 
+//regroupement d'appel de fonctions dans main
 async function main() {
     await compareProduct();
     displayQuantityAndPrice();
