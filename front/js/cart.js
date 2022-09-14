@@ -25,7 +25,8 @@ for (i = 0; i < localProducts.length; i++) {
 //const qui permet de récupérer "cart__items"
 const card = document.getElementById("cart__items")
 
-//fonction qui permet de générer l'affichage des produits dans l'article en fonction des produits présent dans le LS et des infos de l'API
+//fonction qui permet de générer l'affichage des produits dans l'article 
+//en fonction des produits présent dans le LS et des infos de l'API
 function displayItem(products, productToShow) {
     let childCard = document.createElement("article");
     childCard.classList.add("cart__item");
@@ -61,7 +62,8 @@ async function compareProduct() {
     const products = await getProduct();
     //productToShow = produit récup du LS
     for (let productToShow of localProducts) {
-        //pour chaque produit trouver dans le LS => const product => filter = recherche dans résultat fetch. si produit LS stric = produit fetch => affichage
+        //pour chaque produit trouver dans le LS => const product => filter 
+        // = recherche dans résultat fetch. si produit LS stric = produit fetch => affichage
         const product = products.filter(p => p._id === productToShow.id)
         // 0 car tableau démarre à 0, pour être sûr qu'aucun produit n'est oublié
         displayItem(product[0], productToShow)
@@ -115,7 +117,8 @@ function changeQuantityFromCard() {
     const itemQuantity = document.getElementsByName("itemQuantity");
     //boucle qui regarde tout les input
     for (let item of itemQuantity) {
-        //ajout evenlistener qui permet de cibler l'input au click par la récupération de l'id et color grace aux dataset
+        //ajout evenlistener qui permet de cibler l'input au click 
+        //par la récupération de l'id et color grace aux dataset
         item.addEventListener("change", function (event) {
             const parent = event.target.closest("article")
             const id = parent.dataset.id

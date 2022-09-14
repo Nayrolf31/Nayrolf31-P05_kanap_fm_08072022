@@ -69,7 +69,6 @@ function makeColors(colors) {
 
 
 //const pour récupérer la couleur et quantité du produit
-
 const button = document.querySelector("#addToCart")
 button.addEventListener("click", handleClick)
 
@@ -77,9 +76,14 @@ button.addEventListener("click", handleClick)
 function handleClick() {
     const color = document.querySelector("#colors").value
     const quantity = document.querySelector("#quantity").value
-    if (isOrderInvalid(color, quantity)) return
-    saveOrder(color, quantity)
-    alertToCart()
+    if(quantity < 0 || quantity > 100) {
+        window.alert("saisir une quantité entre 1 et 100")
+        return
+    } 
+        if (isOrderInvalid(color, quantity)) return
+        saveOrder(color, quantity)
+        alertToCart()
+    
 }
 
 //const pour recup toutes les infos necessaire ( dont price par l'API)
@@ -111,13 +115,15 @@ function saveOrder(color, quantity) {
             if (element.id === id && element.color === color) {
                 localProducts[key].quantity = parseInt(element.quantity) +
                     parseInt(Number(quantity))
-                    //
+                    //condition pour que l'input du panier ne dépasse pas 100 articles
                     if(localProducts[key].quantity > 100)  {
-                        console.log("coucou")
                         localProducts[key].quantity = 100
                         alert("100 articles identiques maximum dans le panier")
-                    }     
-                    // 
+                    } 
+                    if(localProducts[key].quantity <= -1)  {
+                        localProducts[key].quantity = 1
+                        alert("négatifs interdit dans la saisie")
+                    }        
                 localStorage.setItem('produit', JSON.stringify(localProducts
                 ));
                 updateProduct = true;
@@ -132,6 +138,10 @@ function saveOrder(color, quantity) {
     }
 }
 
+function managequantity() {}
+
+
+
 //fonction pour verifier si une color et quantité à était choisis
 
 function isOrderInvalid(color, quantity) {
@@ -141,10 +151,6 @@ function isOrderInvalid(color, quantity) {
     }
     if (quantity == null || quantity == 0) {
         alert("choisissez une quantitée")
-        return true
-    }
-    if (quantity > 100 || quantity < 1) {
-        alert("100 articles maximum")
         return true
     }
 }
